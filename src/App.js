@@ -152,7 +152,7 @@ const App = () => {
           from: ethereum.selectedAddress, 
           to: CONTRACT_ADDRESS,
           value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
-          gasLimit: 6000000,
+          gasLimit: ethers.utils.hexlify(6000000),
           gasPrice: gasP._hex,
           // gasPrice: ethers.utils.parseUnits("1.0", "gwei").toHexString(),
           data: iface.encodeFunctionData("mintNFTEth"),
