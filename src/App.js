@@ -136,25 +136,23 @@ const App = () => {
       let ethereum = window.ethereum;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
-        const signer = provider.getSigner();
-        const connectedContract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          NFTFLOW.abi,
-          signer
-        );
+        // const signer = provider.getSigner();
+        // const connectedContract = new ethers.Contract(
+          // CONTRACT_ADDRESS,
+          // NFTFLOW.abi,
+          // signer
+        // );
 
         let iface = new ethers.utils.Interface(NFTFLOW.abi);
         let gasP = await provider.getGasPrice();
         
-        console.log(gasP);
-
         // console.log(iface.encodeFunctionData("mintNFTEth"));
 
         const transactionParameters = [{
           from: ethereum.selectedAddress, 
           to: CONTRACT_ADDRESS,
           value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
-          gasLimit: "25000000",
+          gasLimit: 6000000,
           gasPrice: gasP._hex,
           // gasPrice: ethers.utils.parseUnits("1.0", "gwei").toHexString(),
           data: iface.encodeFunctionData("mintNFTEth"),
@@ -164,7 +162,6 @@ const App = () => {
 
         try {
           const txHash = await provider.send('eth_sendTransaction', transactionParameters);
-          await txHash.wait();
 
           // let txHash = await connectedContract.withdraw();
           // await txHash.wait();
@@ -238,8 +235,11 @@ const App = () => {
               <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View Collection on OpenSea</a>
         </div>
         <div className="header-container">
+          <button className="cta-button connect-wallet-button" onClick={mintNFT}>
+            MINT
+          </button> 
           {currentUserAccount
-            ? renderMintNFTButton()
+            ? null
             : renderNotConnectedContainer()}
         </div>
         <div className="header-container">
