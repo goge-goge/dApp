@@ -136,37 +136,54 @@ const App = () => {
       let ethereum = window.ethereum;
       if (ethereum) {
         const provider = new ethers.providers.Web3Provider(ethereum);
-        // const signer = provider.getSigner();
-        // const connectedContract = new ethers.Contract(
-          // CONTRACT_ADDRESS,
-          // NFTFLOW.abi,
-          // signer
-        // );
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(
+          CONTRACT_ADDRESS,
+          NFTFLOW.abi,
+          signer
+        );
 
-        let iface = new ethers.utils.Interface(NFTFLOW.abi);
+        // let iface = new ethers.utils.Interface(NFTFLOW.abi);
         let gasP = await provider.getGasPrice();
+
+        // let tx = {
+          // from: account,
+          // to: CONTRACT_ADDRESS,
+          // value: ethers.utils.parseEther("0.1"),
+          // chainId: RINKEBY_CHAIN_ID,
+          // data: iface.encodeFunctionData("mintNFTEth")
+        // }
         
         // console.log(iface.encodeFunctionData("mintNFTEth"));
 
-        const transactionParameters = [{
-          from: ethereum.selectedAddress, 
-          to: CONTRACT_ADDRESS,
-          value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
-          gasLimit: ethers.utils.hexlify(6000000),
-          gasPrice: gasP._hex,
+        // const transactionParameters = [{
+          // from: ethereum.selectedAddress, 
+          // to: CONTRACT_ADDRESS,
+          // value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
+          // gasLimit: ethers.utils.hexlify(6000000),
+          // gasPrice: gasP._hex,
           // gasPrice: ethers.utils.parseUnits("1.0", "gwei").toHexString(),
-          data: iface.encodeFunctionData("mintNFTEth"),
-        }];
-
-        console.log(transactionParameters);
+          // data: iface.encodeFunctionData("mintNFTEth"),
+        // }];
+        // console.log(transactionParameters);
 
         try {
-          const txHash = await provider.send('eth_sendTransaction', transactionParameters);
+          // const txHash = await provider.estimateGas(tx).then(function (estimate) {
+              // tx.gasLimit = estimate;
+              // tx.gasPrice = provider.getGasPrice();
+              // signer.signTransaction(tx).then((signedTX) => {
+                // provider.sendTransaction(signedTX).then(console.log);
+              // })
+          // })
 
+          const tx = await connectedContract.mintNFTEth({
+            value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
+            gasLimit: 5000000,
+            gasPrice: gasP._hex,
+          })
+          // const txHash = await provider.send('eth_sendTransaction', transactionParameters);
           // let txHash = await connectedContract.withdraw();
           // await txHash.wait();
-
-
 
           // const txHash = await provider.estimateGas({
             // from: ethereum.selectedAddress,
@@ -175,7 +192,7 @@ const App = () => {
             // value: ethers.utils.parseEther("0.1", 'ether').toHexString(), 
           // })
 
-          console.log("mint success", txHash);
+          console.log("mint success", tx);
         } catch (error) {
           console.log(error);
         }
@@ -235,11 +252,8 @@ const App = () => {
               <img src={openseaLogo} alt="opensea-logo" className="opensea-logo" />View Collection on OpenSea</a>
         </div>
         <div className="header-container">
-          <button className="cta-button connect-wallet-button" onClick={mintNFT}>
-            MINT
-          </button> 
           {currentUserAccount
-            ? null
+            ? renderMintNFTButton()
             : renderNotConnectedContainer()}
         </div>
         <div className="header-container">
