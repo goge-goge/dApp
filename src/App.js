@@ -9,8 +9,8 @@ import React from "react";
 // Constants
 const TWITTER_HANDLE = "NftflowStarkNet";
 const TWITTER_LINK = `https://twitter.com/${TWITTER_HANDLE}`;
-const OPENSEA_LINK = "https://testnets.opensea.io/collection/nftflow-membership-pass-testing";
-const CONTRACT_ADDRESS = "0xf80c8dB19BB65d40E40A3920eA6b927D7EE14ebC";
+const OPENSEA_LINK = "https://testnets.opensea.io/collection/nftflow-membership-pass-x1ee7njvot";
+const CONTRACT_ADDRESS = "0x48E09beF65B4Ba709C69f7003C385f2aC09493D1";
 // const CONTRACT_ADDRESS = "0x249F5fF0D0A4604912e2C27107cb5c22d8eD8dE1";
 const RINKEBY_CHAIN_ID = "0x4";
 
@@ -143,14 +143,32 @@ const App = () => {
           signer
         );
 
+        // let iface = new ethers.utils.Interface(NFTFLOW.abi);
         let gasP = await provider.getGasPrice();
 
+        // let txData = iface.encodeFunctionData("mintNFTEth");
+
+        // var rawTx = {
+          // value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
+          // gasPrice: gasP._hex,
+        // };
+
+        // let findgaslimit = await provider.estimateGas(signer, CONTRACT_ADDRESS, txData, rawTx);
+        // rawTx.gasLimit = findgaslimit;
+        // console.log(rawTx);
+
         try {
+          // mint NFT
           const tx = await connectedContract.mintNFTEth({
             value: ethers.utils.parseEther("0.1", 'ether').toHexString(),
-            gasLimit: 0,
+            gasLimit: 5000000,
             gasPrice: gasP._hex,
-          })
+          });
+
+          // const tx = await connectedContract.mintNFTEth(rawTx);
+
+          // withdraw onlyOwner
+          // const tx = await connectedContract.withdraw();
 
           console.log("mint success", tx);
         } catch (error) {
@@ -200,7 +218,7 @@ const App = () => {
     <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">NFT Membership Pass</p>
+          <p className="header gradient-text">NFTflow Membership Pass</p>
         </div>
         <div className="header-container">
           <a
